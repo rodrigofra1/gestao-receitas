@@ -1,5 +1,5 @@
 datasource db {
-  provider = "postgresql" // ou o banco de dados que você está utilizando
+  provider = "postgresql" 
   url      = env("DATABASE_URL")
 }
 
@@ -12,11 +12,11 @@ model User {
   username         String         @unique
   email            String         @unique
   password         String
-  recipes          Recipe[]       // Relacionamento com receitas
-  favorites        Favorite[]     // Relacionamento com favoritos
-  notes            Note[]         // Relacionamento com notas
-  sharedRecipes    SharedRecipe[] // Relacionamento com receitas compartilhadas
-  receivedRecipes  SharedRecipe[] @relation("SharedWith") // Adicionando a relação reversa (com as receitas compartilhadas com o usuário)
+  recipes          Recipe[]       
+  favorites        Favorite[]     
+  notes            Note[]         
+  sharedRecipes    SharedRecipe[] 
+  receivedRecipes  SharedRecipe[] @relation("SharedWith") 
 }
 
 
@@ -55,9 +55,9 @@ model SharedRecipe {
   id            Int    @id @default(autoincrement())
   recipeId      Int
   userId        Int
-  sharedWithId  Int    // Este campo representa o usuário com quem a receita foi compartilhada
+  sharedWithId  Int    
   user          User   @relation(fields: [userId], references: [id])
   recipe        Recipe @relation(fields: [recipeId], references: [id])
-  sharedWith    User   @relation("SharedWith", fields: [sharedWithId], references: [id]) // Relacionamento com o usuário com quem foi compartilhado
+  sharedWith    User   @relation("SharedWith", fields: [sharedWithId], references: [id]) 
 }
 

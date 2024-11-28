@@ -1,4 +1,3 @@
-// controllers/favorite.js
 import prisma from '../prismaClient.js';
 
 export const addFavorite = async (req, res) => {
@@ -7,18 +6,18 @@ export const addFavorite = async (req, res) => {
   try {
     // Verificar se os dados foram enviados corretamente
     if (!userId || !recipeId) {
-      return res.status(400).json({ error: 'Faltando dados: userId ou recipeId.' });
+      return res.status(400).json({ error: 'Faltam os dados: userId ou recipeId.' });
     }
 
-    // Verificar se a receita e o usuário existem no banco de dados
+    // Verificar se a receita e o utilizador existem no banco de dados
     const recipe = await prisma.recipe.findUnique({ where: { id: recipeId } });
     const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!recipe || !user) {
-      return res.status(404).json({ error: 'Receita ou usuário não encontrado.' });
+      return res.status(404).json({ error: 'Receita ou utilizador não encontrado.' });
     }
 
-    // Verificar se o favorito já existe (com a combinação userId e recipeId)
+    // Verificar se o favorito já existe 
     const existingFavorite = await prisma.favorite.findFirst({
       where: { 
         userId: userId,
@@ -30,7 +29,7 @@ export const addFavorite = async (req, res) => {
       return res.status(400).json({ error: 'Receita já adicionada aos favoritos.' });
     }
 
-    // Adicionar ao banco de dados
+    // Adicionar a base de dados
     const favorite = await prisma.favorite.create({
       data: {
         userId,
@@ -38,9 +37,9 @@ export const addFavorite = async (req, res) => {
       },
     });
 
-    res.status(201).json(favorite); // Retorna o favorito criado
+    res.status(201).json(favorite); 
   } catch (error) {
-    console.error('Erro ao adicionar aos favoritos:', error); // Verifica o erro no console
+    console.error('Erro ao adicionar aos favoritos:', error);
     res.status(500).json({ error: 'Erro ao adicionar aos favoritos.', details: error.message });
   }
 };

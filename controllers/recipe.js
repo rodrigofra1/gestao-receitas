@@ -1,7 +1,6 @@
-// controllers/recipe.js
 import prisma from '../prismaClient.js';
 
-// Criar uma receita
+// Create
 export const createRecipe = async (req, res) => {
   const { title, ingredients, instructions, category, userId } = req.body;
 
@@ -23,7 +22,7 @@ export const createRecipe = async (req, res) => {
   }
 };
 
-// Listar todas as receitas
+// List
 export const listRecipes = async (req, res) => {
   try {
     const recipes = await prisma.recipe.findMany();
@@ -33,7 +32,7 @@ export const listRecipes = async (req, res) => {
   }
 };
 
-// Atualizar uma receita
+//update
 export const updateRecipe = async (req, res) => {
   const { id } = req.params;
   const { title, ingredients, instructions, category, userId } = req.body;
@@ -55,7 +54,7 @@ export const updateRecipe = async (req, res) => {
   }
 };
 
-// Deletar uma receita
+// Delete
 export const deleteRecipe = async (req, res) => {
   const { id } = req.params;
 
@@ -63,8 +62,8 @@ export const deleteRecipe = async (req, res) => {
     await prisma.recipe.delete({
       where: { id: parseInt(id) }
     });
-    res.status(200).json({ message: 'Receita deletada com sucesso.' });
+    res.status(200).json({ message: 'Receita apagada com sucesso.' });
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao deletar a receita.' });
+    res.status(500).json({ error: 'Erro ao apagar a receita.' });
   }
 };

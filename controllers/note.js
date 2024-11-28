@@ -4,15 +4,15 @@ const prisma = new PrismaClient();
 
 // Função para adicionar uma nota
 export const addNote = async (req, res) => {
-  const { recipeId, content, userId } = req.body; // Esperando os dados de recipeId, content e userId
+  const { recipeId, content, userId } = req.body; 
 
-  // Verifique se todos os parâmetros necessários foram fornecidos
+  // Verifica se  os parâmetros foram fornecidos
   if (!recipeId || !content || !userId) {
-    return res.status(400).json({ error: 'Faltando recipeId, conteúdo ou userId.' });
+    return res.status(400).json({ error: 'Falta o recipeId, conteúdo ou userId.' });
   }
 
   try {
-    // Verificando se a receita e o usuário existem no banco de dados
+    // Verifica se a receita e o utilizador existem na base de dados
     const recipe = await prisma.recipe.findUnique({
       where: { id: recipeId },
     });
@@ -21,21 +21,21 @@ export const addNote = async (req, res) => {
       where: { id: userId },
     });
 
-    // Se a receita ou o usuário não forem encontrados, retornamos erro
+    // Se a receita ou o urilizador não forem encontrados, return erro
     if (!recipe) {
       return res.status(404).json({ error: 'Receita não encontrada.' });
     }
 
     if (!user) {
-      return res.status(404).json({ error: 'Usuário não encontrado.' });
+      return res.status(404).json({ error: 'urilizador não encontrado.' });
     }
 
-    // Criar a nota e associá-la ao recipeId e ao userId diretamente
+    // Cria a nota e associá-la ao recipeId e ao userId diretamente
     const createdNote = await prisma.note.create({
       data: {
-        content, // O conteúdo da nota
-        recipeId, // Associando a nota à receita
-        userId, // Associando a nota ao usuário
+        content, 
+        recipeId, 
+        userId, 
       },
     });
 

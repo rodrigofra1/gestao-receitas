@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import prisma from '../prismaClient.js';
 
-// Registo de utilizador
+// Registo
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -25,7 +25,7 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// Login de utilizador
+// Login
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -38,7 +38,7 @@ export const loginUser = async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(400).json({ success: false, message: 'Senha incorreta.' });
+      return res.status(400).json({ success: false, message: 'psw incorreta.' });
     }
 
     res.status(200).json({ success: true, message: 'Login bem-sucedido', data: user });
@@ -48,7 +48,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Listar utilizadores
+// List
 export const listUsers = async (req, res) => {
   try {
     const users = await prisma.user.findMany();
@@ -59,7 +59,7 @@ export const listUsers = async (req, res) => {
   }
 };
 
-// Atualizar utilizador
+// update
 export const updateUsers = async (req, res) => {
   const { id } = req.params;
   const { username, email, password } = req.body;
@@ -84,7 +84,7 @@ export const updateUsers = async (req, res) => {
   }
 };
 
-// Apagar utilizador
+//delete
 export const deleteUsers = async (req, res) => {
   const { id } = req.params;
 
@@ -95,14 +95,12 @@ export const deleteUsers = async (req, res) => {
       return res.status(400).json({ success: false, message: 'ID inválido. Deve ser um número inteiro.' });
     }
 
-    console.log(`Apagando registos relacionados ao utilizador com ID: ${parsedId}`);
+    console.log(`A apagar os registos ligados ao utilizador com ID: ${parsedId}`);
 
-    // Apagar todas as notas associadas ao utilizador
     await prisma.note.deleteMany({
       where: { userId: parsedId },
     });
 
-    // Apagar o utilizador
     await prisma.user.delete({
       where: { id: parsedId },
     });

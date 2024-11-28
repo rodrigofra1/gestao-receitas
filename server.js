@@ -18,7 +18,6 @@ const prisma = new PrismaClient();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Rotas
 app.use('/api/users', userRoutes); 
 app.use('/api/recipes', recipeRoutes); 
 app.use('/api/favorites', favoriteRoutes); 
