@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql" // ou o banco de dados que você está utilizando
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  username         String         @unique
+  email            String         @unique
+  password         String
+  recipes          Recipe[]       // Relacionamento com receitas
+  favorites        Favorite[]     // Relacionamento com favoritos
+  notes            Note[]         // Relacionamento com notas
+  sharedRecipes    SharedRecipe[] // Relacionamento com receitas compartilhadas
+  receivedRecipes  SharedRecipe[] @relation("SharedWith") // Adicionando a relação reversa (com as receitas compartilhadas com o usuário)
+}
+
+
+model Recipe {
+  id        Int      @id @default(autoincrement())
+  title     String
+  ingredients String
+  instructions String
+  category  String
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  notes     Note[]
+  favorites Favorite[]
+  sharedWith SharedRecipe[]
+}
+
+model Favorite {
+  id        Int    @id @default(autoincrement())
+  recipeId  Int
+  userId    Int
+  recipe    Recipe @relation(fields: [recipeId], references: [id])
+  user      User   @relation(fields: [userId], references: [id])
+}
+
+model Note {
+  id        Int    @id @default(autoincrement())
+  content   String
+  recipeId  Int
+  userId    Int
+  recipe    Recipe @relation(fields: [recipeId], references: [id])
+  user      User   @relation(fields: [userId], references: [id])
+}
+
+model SharedRecipe {
+  id            Int    @id @default(autoincrement())
+  recipeId      Int
+  userId        Int
+  sharedWithId  Int    // Este campo representa o usuário com quem a receita foi compartilhada
+  user          User   @relation(fields: [userId], references: [id])
+  recipe        Recipe @relation(fields: [recipeId], references: [id])
+  sharedWith    User   @relation("SharedWith", fields: [sharedWithId], references: [id]) // Relacionamento com o usuário com quem foi compartilhado
+}
+

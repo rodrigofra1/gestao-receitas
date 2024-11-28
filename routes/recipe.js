@@ -1,13 +1,19 @@
-const express = require('express');
-const recipeController = require('../controllers/recipe');
+// routes/recipe.js
+import express from 'express';
+import { createRecipe, listRecipes, updateRecipe, deleteRecipe } from '../controllers/recipe.js';
 
 const router = express.Router();
 
-// Definir as rotas para as receitas
-router.get('/', recipeController.getAll); // Listar todas as receitas
-router.get('/:id', recipeController.getById); // Buscar uma receita por ID
-router.post('/create', recipeController.create); // Criar uma nova receita
-router.put('/update', recipeController.update); // Atualizar uma receita existente
-router.delete('/delete/:id', recipeController.delete); // Deletar uma receita por ID
+// Criar uma receita
+router.post('/create', createRecipe);
 
-module.exports = router;
+// Listar todas as receitas
+router.get('/list', listRecipes);
+
+// Atualizar uma receita
+router.put('/:id', updateRecipe);
+
+// Deletar uma receita
+router.delete('/:id', deleteRecipe);
+
+export default router;

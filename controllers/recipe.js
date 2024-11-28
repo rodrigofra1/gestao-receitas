@@ -1,72 +1,70 @@
-const fs = require('fs');
+// controllers/recipe.js
+import prisma from '../prismaClient.js';
 
-// Ler todas as receitas
-exports.getAll = async (req, res) => {
-  const datajson = fs.readFileSync("data/local/data.json", "utf-8");
-  const data = JSON.parse(datajson);
-  return res.send(data.recipes);
-}
+// Criar uma receita
+export const createRecipe = async (req, res) => {
+  const { title, ingredients, instructions, category, userId } = req.body;
 
-// Buscar receita por ID
-exports.getById = async (req, res) => {
-  const id = req.params.id;
-  const datajson = fs.readFileSync("data/local/data.json", "utf-8");
-  const data = JSON.parse(datajson);
-  const recipe = data.recipes.find(recipe => recipe.id == id);
-  if (recipe) {
-    return res.send(recipe);
-  } else {
-    return res.status(404).send("Receita não encontrada.");
+  try {
+    const recipe = await prisma.recipe.create({
+      data: {
+        title,
+        ingredients,
+        instructions,
+        category,
+        userId
+      }
+    });
+
+    res.status(201).json(recipe);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Erro ao criar a receita.' });
   }
-}
+};
 
-// Criar nova receita
-exports.create = async (req, res) => {
-  const { title, category, description } = req.body;
-  const datajson = fs.readFileSync("data/local/data.json", "utf-8");
-  const data = JSON.parse(datajson);
-  const newRecipe = {
-    id: data.recipes.length + 1, // Gerar um ID simples (poderia ser mais robusto)
-    title,
-    category,
-    description,
-    created_at: new Date().toISOString()
-  };
-  data.recipes.push(newRecipe);
-  fs.writeFileSync("data/local/data.json", JSON.stringify(data));
-  return res.status(201).send(newRecipe);
-}
-
-// Atualizar receita
-exports.update = async (req, res) => {
-  const { id, title, category, description } = req.body;
-  const datajson = fs.readFileSync("data/local/data.json", "utf-8");
-  const data = JSON.parse(datajson);
-  const recipe = data.recipes.find(recipe => recipe.id == id);
-  
-  if (recipe) {
-    recipe.title = title;
-    recipe.category = category;
-    recipe.description = description;
-    fs.writeFileSync("data/local/data.json", JSON.stringify(data));
-    return res.send(recipe);
-  } else {
-    return res.status(404).send("Receita não encontrada.");
+// Listar todas as receitas
+export const listRecipes = async (req, res) => {
+  try {
+    const recipes = await prisma.recipe.findMany();
+    res.status(200).json(recipes);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao listar as receitas.' });
   }
-}
+};
 
-// Excluir receita
-exports.delete = async (req, res) => {
-  const id = req.params.id;
-  const datajson = fs.readFileSync("data/local/data.json", "utf-8");
-  const data = JSON.parse(datajson);
-  const index = data.recipes.findIndex(recipe => recipe.id == id);
-  
-  if (index !== -1) {
-    data.recipes.splice(index, 1);
-    fs.writeFileSync("data/local/data.json", JSON.stringify(data));
-    return res.status(200).send("Receita deletada.");
-  } else {
-    return res.status(404).send("Receita não encontrada.");
+// Atualizar uma receita
+export const updateRecipe = async (req, res) => {
+  const { id } = req.params;
+  const { title, ingredients, instructions, category, userId } = req.body;
+
+  try {
+    const updatedRecipe = await prisma.recipe.update({
+      where: { id: parseInt(id) },
+      data: {
+        title,
+        ingredients,
+        instructions,
+        category,
+        userId
+      }
+    });
+    res.status(200).json(updatedRecipe);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar a receita.' });
   }
-}
+};
+
+// Deletar uma receita
+export const deleteRecipe = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await prisma.recipe.delete({
+      where: { id: parseInt(id) }
+    });
+    res.status(200).json({ message: 'Receita deletada com sucesso.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao deletar a receita.' });
+  }
+};

@@ -1,9 +1,16 @@
-const router = require('express').Router();
-const recipeRouter = require('./recipe');
-const userRouter = require('./user');
+import express from 'express';
+import userRoutes from './user.js';
+import recipeRoutes from './recipe.js';
+import favoriteRoutes from './favorite.js';
+import noteRoutes from './note.js';
+import sharedRecipeRoutes from './sharedrecipe.js';
 
-// Registrar rotas
-router.use('/recipes', recipeRouter);
-router.use('/users', userRouter);
+const router = express.Router();
 
-module.exports = router;
+router.use('/users', userRoutes);
+router.use('/recipes', recipeRoutes);
+router.use('/favorites', favoriteRoutes);
+router.use('/notes', noteRoutes);
+router.use('/sharedRecipes', sharedRecipeRoutes);
+
+export default router;

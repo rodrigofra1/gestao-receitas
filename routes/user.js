@@ -1,11 +1,24 @@
-const userRouter = require('express').Router();
-const controller = require('../controllers/user');
+// routes/user.js
+import express from 'express';
+import { registerUser, loginUser, listUsers, updateUsers, deleteUsers} from '../controllers/user.js';  // Certifique-se de importar as funções corretamente
 
-// CRUD para usuários
-userRouter.get('/', controller.getAll); // Listar todos os usuários
-userRouter.get('/:id', controller.getById); // Obter usuário por ID
-userRouter.post('/create', controller.create); // Criar novo usuário
-userRouter.put('/update', controller.update); // Atualizar usuário
-userRouter.delete('/delete/:id', controller.delete); // Deletar usuário
+const router = express.Router();
 
-module.exports = userRouter;
+// Rota para criar um usuário
+router.post('/register', registerUser);
+
+// Rota para fazer login de um usuário
+router.post('/login', loginUser);
+
+// Rota para listar todos os usuários
+router.get('/list', listUsers);  // A rota para listar todos os usuários é "/api/users"
+
+//atualizar
+router.put('/:id', updateUsers);
+
+//delete
+router.delete('/:id', deleteUsers);
+
+// Exportando as rotas
+export default router;
+
